@@ -1,21 +1,92 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Formulario de Registro</title>
+  <meta charset="UTF-8" />
+  <title>Formulario con Menú</title>
+  <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <h1>Registrarse</h1>
-  <form id="formulario">
-    <label for="correo">Correo:</label><br>
-    <input type="email" id="correo" name="correo" required><br><br>
+  <div class="container">
+    <form id="formulario" class="formulario">
+      <h2>Registro</h2>
 
-    <label for="clave">Contraseña:</label><br>
-    <input type="password" id="clave" name="clave" required><br><br>
+      <label for="correo">Correo:</label>
+      <input type="email" id="correo" required />
 
-    <button type="submit">Enviar</button>
-  </form>
+      <label for="clave">Contraseña:</label>
+      <input type="password" id="clave" required />
 
-  <script src="script.js"></script>
+      <button type="submit">Ingresar</button>
+    </form>
+
+    <div id="app" class="app" style="display:none;">
+      <nav class="sidebar">
+        <h2>Menú</h2>
+        <ul class="nav">
+          <li><a href="#" onclick="mostrarSeccion('inicio')">🏠 Inicio</a></li>
+          <li><a href="#" onclick="mostrarSeccion('perfil')">👤 Perfil</a></li>
+          <li><a href="#" onclick="mostrarSeccion('configuracion')">⚙️ Configuración</a></li>
+          <li><a href="#" onclick="cerrarSesion()">🔓 Cerrar sesión</a></li>
+        </ul>
+      </nav>
+
+      <main class="contenido">
+        <section id="inicio" class="seccion visible">
+          <h3>Página de Inicio</h3>
+          <p>Bienvenido a la sección de inicio.</p>
+        </section>
+
+        <section id="perfil" class="seccion oculto">
+          <h3>Perfil de Usuario</h3>
+          <p>Aquí puedes ver tu información personal.</p>
+        </section>
+
+        <section id="configuracion" class="seccion oculto">
+          <h3>Configuración</h3>
+          <p>Personaliza tu experiencia desde aquí.</p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const formulario = document.getElementById("formulario");
+    const app = document.getElementById("app");
+
+    formulario.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const correo = document.getElementById("correo").value;
+      const clave = document.getElementById("clave").value;
+
+      const nuevoRegistro = { correo, clave };
+
+      const datosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
+      datosGuardados.push(nuevoRegistro);
+      localStorage.setItem("usuarios", JSON.stringify(datosGuardados));
+
+      formulario.style.display = "none";
+      app.style.display = "flex";
+      mostrarSeccion("inicio");
+    });
+
+    function cerrarSesion() {
+      app.style.display = "none";
+      formulario.style.display = "block";
+    }
+
+    function mostrarSeccion(id) {
+      const secciones = document.querySelectorAll(".seccion");
+      secciones.forEach((sec) => {
+        if (sec.id === id) {
+          sec.classList.add("visible");
+          sec.classList.remove("oculto");
+        } else {
+          sec.classList.remove("visible");
+          sec.classList.add("oculto");
+        }
+      });
+    }
+  </script>
 </body>
 </html>
